@@ -38,7 +38,6 @@ const Login = props => {
       const response = await mutate({
         variables: { email, password }
       });
-      console.log(response);
 
       if (response) {
         await AsyncStorage.setItem('token', response.data.login.token);

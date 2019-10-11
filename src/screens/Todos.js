@@ -1,13 +1,19 @@
 import React, { Fragment } from 'react';
 import { FlatList, AsyncStorage } from 'react-native';
 import { Title, Appbar } from 'react-native-paper';
-import { graphql } from 'react-apollo';
+import { graphql, withApollo } from 'react-apollo';
 import { compose } from 'recompose';
 import gql from 'graphql-tag';
 
 import Todo from '../components/Todo';
 
-const Todos = ({ data: { tasks, loading }, history, mutate }) => {
+const Todos = props => {
+  const {
+    data: { tasks, loading },
+    history,
+    mutate,
+    client
+  } = props;
   const onHandleView = task => {
     history.push('/view-todo', {
       task
@@ -29,6 +35,7 @@ const Todos = ({ data: { tasks, loading }, history, mutate }) => {
 
   const handleLogout = async () => {
     await AsyncStorage.setItem('token', '');
+    client.resetStore();
     history.push('/login');
   };
 
@@ -74,7 +81,9 @@ export const removeTaskMutation = gql`
   }
 `;
 
-export default compose(
-  graphql(taskQuery),
-  graphql(removeTaskMutation)
-)(Todos);
+export default withApollo(
+  compose(
+    graphql(taskQuery),
+    graphql(removeTaskMutation)
+  )(Todos)
+);

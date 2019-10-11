@@ -41,7 +41,6 @@ const Register = props => {
         variables: { firstName, lastName, email, password }
       });
 
-      console.log(response);
       if (response) {
         history.push('/login');
       }
